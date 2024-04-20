@@ -17,3 +17,7 @@ export interface BookingFormProps {
 export interface InputFormLabel {
     label?: string
 }
+
+export interface InputForm<T> extends InputFormLabel {
+    onChange?: (value: T) => void
+}

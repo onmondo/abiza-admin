@@ -61,7 +61,7 @@ export function BookingTable() {
 
     return (
         <>
-                <section>
+        <section>
         <Stack gap={2} className="mx-auto">
             <Stack direction="horizontal" gap={3}>
             <div>
@@ -84,7 +84,12 @@ export function BookingTable() {
                     {currentMonthlyBookings.map(
                         booking => (
                             <tr key={booking._id}>
-                                <td>{booking.rooms.map(room => room)}</td>
+                                <td>{
+                                    (booking.rooms && booking.rooms?.length > 0) 
+                                        ? booking.rooms.map(room => room)
+                                        : <></>
+                                    }
+                                </td>
                                 <td>{booking.guestName}</td>
                                 <td>{moment(booking.checkIn).format("DD-MMMM-YYYY")}</td>
                                 <td>{moment(booking.checkOut).format("DD-MMMM-YYYY")}</td>
