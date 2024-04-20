@@ -5,7 +5,6 @@ import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import InputGroup from "react-bootstrap/InputGroup";
 import { BookingFormProps } from "../../lib/componentTypes";
 import { YearSelection } from "../YearSelection";
 import { MonthSelection } from "../MonthSelection";
@@ -65,7 +64,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                     </Row>
                     <Row className="mb-3">
                         <Col>
-                            <Form.Label>Check-Out</Form.Label>
+                            <Form.Label>Mode of Payment</Form.Label>
                             <Form.Control type="textarea" placeholder="Mode of payment" />
                         </Col>
                         <Col><AmountInput label="Nightly Price" /></Col>
