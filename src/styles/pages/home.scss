@@ -1,0 +1,7 @@
+article {
+    &#home {
+        grid-column: 2 / span 2;
+    }
+}
+
+@import "~/src/styles/components/bookingTable.scss"
