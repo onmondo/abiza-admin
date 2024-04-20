@@ -1,0 +1,7 @@
+#bookingform {
+    label {
+        &.form-label {
+            @include formLabel()
+        }
+    }
+}

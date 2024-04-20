@@ -1,7 +1,18 @@
+@mixin formLabel {
+    font-size: $form-label-fontsize;
+    color: $form-label-color;
+}
+
 article {
     &#home {
         grid-column: 2 / span 2;
+        label {
+            &.form-label {
+                @include formLabel()
+            }
+        }
     }
 }
 
-@import "~/src/styles/components/bookingTable.scss"
+@import "~/src/styles/components/bookingTable.scss";
+@import "~/src/styles/components/bookingForm.scss";

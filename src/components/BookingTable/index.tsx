@@ -2,36 +2,26 @@ import React, { useEffect, useState } from "react"
 import moment from "moment"
 import Table from "react-bootstrap/Table"
 import Stack from "react-bootstrap/Stack"
+import Form from "react-bootstrap/Form"
+import Col from "react-bootstrap/Col"
+import Row from "react-bootstrap/Row"
+import Button from "react-bootstrap/Button"
+import { useBookingReportContext } from "../../contexts/BookingReportProvider"
+import { FetchBookingReportParam, FetchParam, Booking } from "../../lib/types"
 import { fetchAPI } from "../../util/fetchApi"
-
 import { YearSelection } from "../YearSelection"
-import { FetchBookingReportParam, FetchParam } from "../../lib/types"
 import { MonthSelection } from "../MonthSelection"
 import { TableHeader } from "./tableHeader"
-import { useBookingReportContext } from "../../contexts/BookingReportProvider"
-// import FloatingLabel from "react-bootstrap/FloatingLabel"
-
-export type Booking = {
-    _id: string
-    checkIn: string
-    checkOut: string
-    datePaid: string
-    from: string
-    guestName: string
-    modeOfPayment: string
-    nightlyPrice: number
-    noOfPax: number
-    noOfStay: number
-    rooms: string[]
-    totalPayout: number
-    createdAt: string
-    updatedAt: string
-    remarks: string
-}
+import { BookingForm } from "../BookingForm"
 
 export function BookingTable() {
     const [currentMonthlyBookings, setCurrentMonthlyBookings] = useState<Booking[]>([])
-    const { state, updateChosenMonth, updateChosenYear } = useBookingReportContext()
+    const { 
+        state,
+        updateChosenMonth,
+        updateChosenYear,
+        updateBookingForm,
+    } = useBookingReportContext()
 
     async function fetchBookings(dateSelected: FetchBookingReportParam) {
         try {
@@ -65,12 +55,28 @@ export function BookingTable() {
         updateChosenYear(event.target.value);
     }
 
+    function handleToggleForm() {
+        updateBookingForm(!state.isBookingFormOpen)
+    }
+
     return (
-        <section>
+        <>
+                <section>
         <Stack gap={2} className="mx-auto">
             <Stack direction="horizontal" gap={3}>
-                <YearSelection handleOnChange={handleYearSelectionOnChange} value={state.chosenYear}/>
-                <MonthSelection handleOnChange={handleMonthSelectionOnChange} value={state.chosenMonth}/>
+            <div>
+                <Row className="mb-3">
+                    <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Label>Year</Form.Label>
+                    <YearSelection handleOnChange={handleYearSelectionOnChange} value={state.chosenYear}/>
+                    </Form.Group>
+
+                    <Form.Group as={Col} controlId="formGridPassword">
+                    <Form.Label>Month</Form.Label>
+                    <MonthSelection handleOnChange={handleMonthSelectionOnChange} value={state.chosenMonth}/>
+                    </Form.Group>
+                </Row>
+            </div>                
             </Stack>
             <Table striped>
                 <TableHeader />
@@ -95,7 +101,13 @@ export function BookingTable() {
                     )}
                 </tbody>
             </Table>
+            <Stack direction="horizontal" gap={3}>
+                <Button variant="primary" onClick={handleToggleForm}>Adde new booking</Button>{' '}
+            </Stack>
         </Stack>
         </section>
+        <BookingForm show={state.isBookingFormOpen} handleClose={handleToggleForm} />
+        </>
+
     )
 }

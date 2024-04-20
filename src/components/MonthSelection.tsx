@@ -8,7 +8,7 @@ export function MonthSelection({ handleOnChange, value }: SelectionProps) {
         <Form.Select 
             onChange={handleOnChange}
             value={value}>
-            <option>Select month</option>
+            <option>Month</option>
             {populateMonthOptions().map(monthOption => <option key={monthOption.label}>{monthOption.value}</option>)}
         </Form.Select>
     )

@@ -18,6 +18,15 @@ export const populateMonthOptions = () => {
     return monthOptions
 }
 
+export const populateDayOptions = (currentMonthYear: string) => {
+    const numOfDays: number = parseInt(moment(currentMonthYear).daysInMonth().toString());
+    const dayOptionCollection: SelectOption[] = [];
+    for(let i = 1; i <= numOfDays; i++) {
+        dayOptionCollection.push({ label: i.toString(), value: i.toString()})
+    }
+    return dayOptionCollection;
+}
+
 export const populateColumnNames = (): string[] => {
     return [
         "Room Occupied",

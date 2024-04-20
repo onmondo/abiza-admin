@@ -9,7 +9,7 @@ export function YearSelection({ handleOnChange, value }: SelectionProps) {
         <Form.Select
             onChange={handleOnChange}
             value={value}>
-            <option>Select year</option>
+            <option>Year</option>
             {populateYearOptions(moment().toISOString()).map(yearOption => <option key={yearOption.label}>{yearOption.value}</option>)}
         </Form.Select>
     )
