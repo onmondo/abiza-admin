@@ -32,10 +32,10 @@ export type Booking = {
     remarks?: string
 }
 
-export type FetchBookingReportParam = {
-    chosenMonth: string,
-    chosenYear: string
-}
+// export type FetchBookingReportParam = {
+//     chosenMonth: string,
+//     chosenYear: string
+// }
 
 export type DateRequest = {
     year?: string
@@ -49,6 +49,8 @@ export type BillingSpecs = {
     noOfStay: number
 }
 
-export interface DeleteBookingParam extends FetchBookingReportParam {
+export interface DeleteBookingParam {
+    chosenMonth: string
+    chosenYear: string
     bookingId: string
 }

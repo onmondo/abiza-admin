@@ -6,8 +6,14 @@ import Form from "react-bootstrap/Form"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import Button from "react-bootstrap/Button"
+import ButtonGroup from "react-bootstrap/ButtonGroup"
+import Pagination from "react-bootstrap/Pagination"
 import { useBookingReportContext } from "../../contexts/BookingReportProvider"
-import { FetchBookingReportParam, FetchParam, Booking, DeleteBookingParam } from "../../lib/types"
+import { 
+    FetchParam, 
+    Booking, 
+    DeleteBookingParam 
+} from "../../lib/types"
 import { deleteData, fetchAPI } from "../../util/api"
 import { YearSelection } from "../YearSelection"
 import { MonthSelection } from "../MonthSelection"
@@ -15,7 +21,12 @@ import { TableHeader } from "./tableHeader"
 import { BookingForm } from "../BookingForm"
 
 export function BookingTable() {
+    const DEFAULT_LIMIT = 10;
     const [currentMonthlyBookings, setCurrentMonthlyBookings] = useState<Booking[]>([])
+    const [currentPage, setCurrentPage] = useState(1)
+    // const [totalPage, totalPage] = useState(1)
+    // const [page, setPage] = useState(1)
+
     const { 
         state,
         updateChosenMonth,
@@ -23,14 +34,11 @@ export function BookingTable() {
         updateBookingForm,
     } = useBookingReportContext()
 
-    async function fetchBookings(dateSelected: FetchBookingReportParam) {
+    async function fetchBookings() {
         try {
-            const year = dateSelected.chosenYear || moment().year().toString();
-            const month = dateSelected.chosenMonth || moment().format("MMMM");
-            const defaultPage = 1;
-            const defaultLimit = 10;
+            
             const fetchParam: FetchParam = {
-                url: `${process.env.ROOT_API}/bookings/${year}/${month}?sort=asc&page=${defaultPage}&limit=${defaultLimit}`
+                url: `${process.env.ROOT_API}/bookings/${state.chosenYear}/${state.chosenMonth}?sort=asc&page=${currentPage}&limit=${DEFAULT_LIMIT}`
             }
             const { monthlyBookings } = await fetchAPI(fetchParam)
             const { data } = monthlyBookings
@@ -41,11 +49,8 @@ export function BookingTable() {
     }
 
     useEffect(() => {
-        fetchBookings({ 
-            chosenYear: state.chosenYear, 
-            chosenMonth: state.chosenMonth
-        })
-    }, [state.chosenMonth, state.chosenYear, state.isBookingFormOpen])
+        fetchBookings()
+    }, [state.chosenMonth, state.chosenYear, state.isBookingFormOpen, currentPage])
 
     function handleMonthSelectionOnChange(event: any) {
         updateChosenMonth(event.target.value);
@@ -76,10 +81,19 @@ export function BookingTable() {
 
     function handleDeleteBooking(deleteBookingParam: DeleteBookingParam) {
         deleteBooking(deleteBookingParam);
-        fetchBookings({ 
-            chosenYear: state.chosenYear, 
-            chosenMonth: state.chosenMonth
-        })
+        fetchBookings();
+    }
+
+    function handleNextPage() {
+        if (currentMonthlyBookings.length >= DEFAULT_LIMIT) {
+            setCurrentPage(currentPage + 1);
+        }
+    }
+
+    function handlePrevPage() {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
     }
 
     return (
@@ -126,23 +140,47 @@ export function BookingTable() {
                                 <td>{moment(booking.datePaid).format("DD-MMMM-YYYY")}</td>
                                 <td>{booking.remarks}</td>
                                 <td>
-                                    <Button 
-                                        variant="danger"
-                                        onClick={() => {
-                                            handleDeleteBooking({
-                                                bookingId: (booking._id || ""),
-                                                chosenMonth: moment(booking.checkIn).format("MMMM"),
-                                                chosenYear: moment(booking.checkIn).format("YYYY")
-                                            })
-                                        }}>
-                                        Delete
-                                    </Button>
+                                    <ButtonGroup>
+                                        <Button 
+                                            variant="dark"
+                                            onClick={handleToggleForm}>
+                                                Edit
+                                        </Button>
+                                        <Button 
+                                            variant="danger"
+                                            onClick={() => {
+                                                handleDeleteBooking({
+                                                    bookingId: (booking._id || ""),
+                                                    chosenMonth: moment(booking.checkIn).format("MMMM"),
+                                                    chosenYear: moment(booking.checkIn).format("YYYY")
+                                                })
+                                            }}>
+                                            Delete
+                                        </Button>
+                                    </ButtonGroup>
                                 </td>
                             </tr> 
                         )
                     )}
                 </tbody>
             </Table>
+            <Pagination>
+                    {/* <Pagination.First /> */}
+                    <Pagination.Prev onClick={handlePrevPage} />
+                    {/* <Pagination.Item>{1}</Pagination.Item> */}
+                    {/* <Pagination.Ellipsis />
+
+                    <Pagination.Item>{10}</Pagination.Item>
+                    <Pagination.Item>{11}</Pagination.Item> */}
+                    <Pagination.Item active>{currentPage}</Pagination.Item>
+                    {/* <Pagination.Item>{13}</Pagination.Item>
+                    <Pagination.Item disabled>{14}</Pagination.Item>
+
+                    <Pagination.Ellipsis /> */}
+                    {/* <Pagination.Item>{20}</Pagination.Item> */}
+                    <Pagination.Next onClick={handleNextPage} />
+                    {/* <Pagination.Last /> */}
+                </Pagination>
             <Stack direction="horizontal" gap={3}>
                 <Button variant="primary" onClick={handleToggleForm}>Adde new booking</Button>{' '}
             </Stack>
