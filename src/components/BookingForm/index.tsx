@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 import { BookingFormProps } from "../../lib/componentTypes";
 import { NumberSlider } from "./NumberSlider";
 import { AmountInput } from "./AmountInput";
-import { postData } from "../../util/fetchApi";
+import { postData } from "../../util/api";
 import { Booking, DateRequest } from "../../lib/types";
 import { CompleteDateInput } from "./CompleteDateInput";
 

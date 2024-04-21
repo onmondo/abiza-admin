@@ -29,6 +29,7 @@ export const populateDayOptions = (currentMonthYear: string) => {
 
 export const populateColumnNames = (): string[] => {
     return [
+        "#",
         "Room Occupied",
         "Guest Name", 
         "Check-In",
@@ -40,6 +41,7 @@ export const populateColumnNames = (): string[] => {
         "From",
         "Mode of Payment",
         "Date Paid",
-        "Remarks"
+        "Remarks",
+        "Actions"
     ]
 }

@@ -1,3 +1,10 @@
-table {
+@mixin smallerFont {
     font-size: 0.8rem
+}
+table {
+    @include smallerFont();
+
+    button.btn {
+        @include smallerFont()
+    }
 }
