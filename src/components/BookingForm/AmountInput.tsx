@@ -7,7 +7,7 @@ export function AmountInput({ label, onChange }: InputForm<number>) {
     const [amount, setAmount] = useState(0)
 
     function handleAmountChange(event: any) {
-        setAmount(event.target.value)
+        setAmount(parseFloat(event.target.value))
     }
 
     useEffect(() => {
@@ -22,8 +22,9 @@ export function AmountInput({ label, onChange }: InputForm<number>) {
             <InputGroup className="mb-3">
                 <InputGroup.Text>₱</InputGroup.Text>
                 <Form.Control 
+                    className="amount"
                     type="number" 
-                    aria-label="Amount (to the nearest dollar)" 
+                    aria-label="Amount (to the nearest peso)" 
                     onChange={handleAmountChange} 
                 />
                 <InputGroup.Text>.00</InputGroup.Text>

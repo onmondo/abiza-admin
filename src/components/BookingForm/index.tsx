@@ -6,19 +6,15 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BookingFormProps } from "../../lib/componentTypes";
-import { YearSelection } from "../YearSelection";
-import { MonthSelection } from "../MonthSelection";
-import { DaySelection } from "../DaySelection";
 import { NumberSlider } from "./NumberSlider";
 import { AmountInput } from "./AmountInput";
 import { postData } from "../../util/fetchApi";
 import { Booking, DateRequest } from "../../lib/types";
-import moment from "moment";
 import { CompleteDateInput } from "./CompleteDateInput";
 
 export function BookingForm({ show, handleClose }: BookingFormProps) {
 
-    const [booking, setBooking] = useState<Booking>({})
+    const [booking, setBooking] = useState<Booking>({ noOfStay: 1, noOfPax: 1})
 
     function handleGuestNameChange(event: any) {
         setBooking({...booking, guestName: event.target.value})
@@ -70,15 +66,19 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
     }
 
     function handleSave() {
-        console.log(booking);
+        postBooking();
     }
 
     async function postBooking() {
         const postOptions = {
             url: `${process.env.ROOT_API}/bookings`,
-            requestBody: {}
+            requestBody: booking
         }
         await postData(postOptions);
+
+        if (handleClose) {
+            handleClose()
+        }
     }
 
     return (

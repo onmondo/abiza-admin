@@ -45,7 +45,7 @@ export function BookingTable() {
             chosenYear: state.chosenYear, 
             chosenMonth: state.chosenMonth
         })
-    }, [state.chosenMonth, state.chosenYear])
+    }, [state.chosenMonth, state.chosenYear, state.isBookingFormOpen])
 
     function handleMonthSelectionOnChange(event: any) {
         updateChosenMonth(event.target.value);
