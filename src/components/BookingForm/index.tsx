@@ -33,8 +33,16 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
         setBooking({...booking, checkIn: `${value.year}-${value.month}-${value.day}`});
     }
 
+    function handleCheckInOnBlur() {
+        setBooking({...booking, checkOut: booking.checkIn})
+    }
+
     function handleCheckOutChange(value: DateRequest) {
         setBooking({...booking, checkOut: `${value.year}-${value.month}-${value.day}`});
+    }
+
+    function handleCheckOutOnBlur() {
+        setBooking({...booking, datePaid: booking.checkOut})
     }
 
     function handlePriceChange (value: number) {
@@ -81,6 +89,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
         }
     }
 
+    console.log(booking);
     return (
         <Modal id="bookingform" show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -131,10 +140,10 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                         </Form.Text>
                     </Row>
                     <Row className="mb-3">
-                        <CompleteDateInput label="Check-In" onChange={handleCheckInChange}/>
+                        <CompleteDateInput label="Check-In" onChange={handleCheckInChange} onBlur={handleCheckInOnBlur} />
                     </Row>
                     <Row className="mb-3">
-                        <CompleteDateInput label="Check-Out" onChange={handleCheckOutChange}/>
+                        <CompleteDateInput label="Check-Out" value={booking.checkOut} onChange={handleCheckOutChange} onBlur={handleCheckOutOnBlur} />
                     </Row>
                     <Row className="mb-3">
                         <Col>
@@ -159,7 +168,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                     </Row>
                     <AmountInput label="Total Payout" onChange={handleTotalAmountChange} />
                     <Row className="mb-3">
-                        <CompleteDateInput label="Date Paid" onChange={handleDatePaidChange}/>
+                        <CompleteDateInput label="Date Paid" value={booking.datePaid} onChange={handleDatePaidChange}/>
                     </Row>
                     <FloatingLabel
                         controlId="floatingInput"

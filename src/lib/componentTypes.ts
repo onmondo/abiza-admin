@@ -6,6 +6,7 @@ export type BookingReportContextProps = {
 
 export interface SelectionProps {
     handleOnChange?: (event: any) => void
+    handleOnBlur?: (event: any) => void
     value?: string
 }
 
@@ -20,4 +21,6 @@ export interface InputFormLabel {
 
 export interface InputForm<T> extends InputFormLabel {
     onChange?: (value: T) => void
+    onBlur?: (value: T) => void
+    value?: string
 }

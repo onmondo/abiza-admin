@@ -7,10 +7,12 @@ import { DateRequest } from "../../lib/types";
 import { YearSelection } from "../YearSelection";
 import { MonthSelection } from "../MonthSelection";
 import { DaySelection } from "../DaySelection";
+import { populateMonthOptions } from "../../util/seeds";
 
-export function CompleteDateInput({ label, onChange }: InputForm<DateRequest>) {
+export function CompleteDateInput({ label, value, onChange, onBlur }: InputForm<DateRequest>) {
 
     const [currentDate, setCurrentDate] = useState<DateRequest>({});
+    const [currentSelectionMonth, setCurrentSelectionMonth] = useState("");
 
     function handleYearChange(event: any) {
         const year = moment(event.target.value).format("YYYY")
@@ -32,12 +34,28 @@ export function CompleteDateInput({ label, onChange }: InputForm<DateRequest>) {
         }
     }, [currentDate])
 
+    // set value to be displayed and use by the upper components
+    useEffect(() => {
+        const dateContents = value?.split("-");
+        const year = (dateContents)? dateContents[0]: moment().format("YYYY");
+        const month = (dateContents)? dateContents[1]: moment().format("MM")
+        const day = (dateContents)? dateContents[2]: moment().format("D")
+        setCurrentDate({...currentDate, year, month, day })
+    }, [value])
+
+    // set value of the month select input
+    useEffect(() => {
+        const availableMonths = populateMonthOptions();
+        const monthInNumber = (currentDate.month) ? parseInt(currentDate.month) - 1 : 0
+        setCurrentSelectionMonth(availableMonths[monthInNumber].value)
+    }, [currentDate.month])
+
     return (
         <>
             <Form.Label>{label}</Form.Label>
-            <Col><YearSelection handleOnChange={handleYearChange}/></Col>
-            <Col><MonthSelection handleOnChange={handleMonthChange} /></Col>
-            <Col><DaySelection handleOnChange={handleDayChange}/></Col>        
+            <Col><YearSelection value={currentDate.year} handleOnChange={handleYearChange} /></Col>
+            <Col><MonthSelection value={currentSelectionMonth} handleOnChange={handleMonthChange} /></Col>
+            <Col><DaySelection value={currentDate.day} handleOnChange={handleDayChange} handleOnBlur={onBlur}/></Col>        
         </>
     )
 }
