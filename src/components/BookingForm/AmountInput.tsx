@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { InputForm } from "../../lib/componentTypes";
 
-export function AmountInput({ label, onChange }: InputForm<number>) {
+export function AmountInput({ label, value, onChange }: InputForm<number>) {
     const [amount, setAmount] = useState(0)
 
     function handleAmountChange(event: any) {
@@ -25,6 +25,7 @@ export function AmountInput({ label, onChange }: InputForm<number>) {
                     className="amount"
                     type="number" 
                     aria-label="Amount (to the nearest peso)" 
+                    value={value}
                     onChange={handleAmountChange} 
                 />
                 <InputGroup.Text>.00</InputGroup.Text>

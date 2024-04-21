@@ -16,17 +16,17 @@ export interface PostParam<T>{
 
 export type Booking = {
     _id?: string
-    checkIn?: string
+    checkIn: string
     checkOut?: string
     datePaid?: string
     from?: string
     guestName?: string
     modeOfPayment?: string
-    nightlyPrice?: number
-    noOfPax?: number
-    noOfStay?: number
+    nightlyPrice: number
+    noOfPax: number
+    noOfStay: number
     rooms?: string[]
-    totalPayout?: number
+    totalPayout: number
     createdAt?: string
     updatedAt?: string
     remarks?: string
@@ -41,4 +41,10 @@ export type DateRequest = {
     year?: string
     month?: string
     day?: string
+}
+
+export type BillingSpecs = {
+    nightlyPrice: number
+    noOfPax: number
+    noOfStay: number
 }

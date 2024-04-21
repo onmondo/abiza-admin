@@ -14,15 +14,23 @@ import { Booking, DateRequest } from "../../lib/types";
 import { CompleteDateInput } from "./CompleteDateInput";
 
 export function BookingForm({ show, handleClose }: BookingFormProps) {
+    // these values can also be pulled from an API resource
     const DEFAULT_MIN_PAX = 1
     const DEFAULT_MAX_PAX = 4
     const DEFAULT_MIN_STAY = 1
     const DEFAULT_MAX_STAY = 14
+    const DEFAULT_PAX = 2
+    const EXTRA_COST = 500
+
     const [booking, setBooking] = useState<Booking>({ 
         noOfStay: DEFAULT_MIN_STAY, 
         noOfPax: DEFAULT_MIN_PAX,
-        checkIn: moment().format("YYYY-MM-DD")
+        checkIn: moment().format("YYYY-MM-DD"),
+        nightlyPrice: 0,
+        totalPayout: 0
     })
+
+    const [tempTotalPayout, setTempTotalPayout] = useState(0);
 
     function handleGuestNameChange(event: any) {
         setBooking({...booking, guestName: event.target.value})
@@ -54,7 +62,11 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
     }
 
     function handlePriceChange (value: number) {
-        setBooking({...booking, nightlyPrice: value})
+        setBooking({
+            ...booking, 
+            nightlyPrice: value,
+            totalPayout: value
+        })
     }
 
     function handlePaymentOptionChange(event: any) {
@@ -66,11 +78,22 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
     }
 
     function handleTotalPaxChange(value: number) {
-        setBooking({...booking, noOfPax: value})
+        const totalPayout = booking.nightlyPrice + ((value > 2) ? (value - DEFAULT_PAX) * EXTRA_COST : 0)
+        setBooking({
+            ...booking, 
+            noOfPax: value,
+            totalPayout
+        })
+
+        setTempTotalPayout(totalPayout)
     }
 
     function handleTotalStayChange(value: number) {
-        setBooking({...booking, noOfStay: value})
+        setBooking({
+            ...booking, 
+            noOfStay: value,
+            totalPayout: tempTotalPayout * (value) 
+        })
     }
     
     function handleDatePaidChange(value: DateRequest) {
@@ -97,7 +120,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
         }
     }
 
-    console.log(booking);
+    // console.log(booking);
     return (
         <Modal id="bookingform" show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -167,7 +190,6 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                         Mode of payment can be Cash or any Bank Transfers available (e.g. BPI, BDO etc...)
                         </Form.Text>
                     </Row>
-
                     <Row className="mb-3">
                         <NumberSlider 
                             label="No. of Pax" 
@@ -182,7 +204,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                             min={DEFAULT_MIN_STAY} 
                             max={DEFAULT_MAX_STAY} />
                     </Row>
-                    <AmountInput label="Total Payout" onChange={handleTotalAmountChange} />
+                    <AmountInput label="Total Payout" value={booking.totalPayout?.toString()} onChange={handleTotalAmountChange} />
                     <Row className="mb-3">
                         <CompleteDateInput label="Date Paid" value={booking.datePaid} onChange={handleDatePaidChange}/>
                     </Row>
