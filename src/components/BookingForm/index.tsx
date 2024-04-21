@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import moment from "moment";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -14,7 +15,11 @@ import { CompleteDateInput } from "./CompleteDateInput";
 
 export function BookingForm({ show, handleClose }: BookingFormProps) {
 
-    const [booking, setBooking] = useState<Booking>({ noOfStay: 1, noOfPax: 1})
+    const [booking, setBooking] = useState<Booking>({ 
+        noOfStay: 1, 
+        noOfPax: 1,
+        checkIn: moment().format("YYYY-MM-DD")
+    })
 
     function handleGuestNameChange(event: any) {
         setBooking({...booking, guestName: event.target.value})
@@ -140,7 +145,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                         </Form.Text>
                     </Row>
                     <Row className="mb-3">
-                        <CompleteDateInput label="Check-In" onChange={handleCheckInChange} onBlur={handleCheckInOnBlur} />
+                        <CompleteDateInput label="Check-In" value={booking.checkIn} onChange={handleCheckInChange} onBlur={handleCheckInOnBlur} />
                     </Row>
                     <Row className="mb-3">
                         <CompleteDateInput label="Check-Out" value={booking.checkOut} onChange={handleCheckOutChange} onBlur={handleCheckOutOnBlur} />
