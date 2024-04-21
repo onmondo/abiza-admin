@@ -14,10 +14,13 @@ import { Booking, DateRequest } from "../../lib/types";
 import { CompleteDateInput } from "./CompleteDateInput";
 
 export function BookingForm({ show, handleClose }: BookingFormProps) {
-
+    const DEFAULT_MIN_PAX = 1
+    const DEFAULT_MAX_PAX = 4
+    const DEFAULT_MIN_STAY = 1
+    const DEFAULT_MAX_STAY = 14
     const [booking, setBooking] = useState<Booking>({ 
-        noOfStay: 1, 
-        noOfPax: 1,
+        noOfStay: DEFAULT_MIN_STAY, 
+        noOfPax: DEFAULT_MIN_PAX,
         checkIn: moment().format("YYYY-MM-DD")
     })
 
@@ -166,10 +169,18 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                     </Row>
 
                     <Row className="mb-3">
-                        <NumberSlider label="No. of Pax" onChange={handleTotalPaxChange} />
+                        <NumberSlider 
+                            label="No. of Pax" 
+                            onChange={handleTotalPaxChange} 
+                            min={DEFAULT_MIN_PAX} 
+                            max={DEFAULT_MAX_PAX} />
                     </Row>
                     <Row className="mb-3">
-                        <NumberSlider label="No. of Stay" onChange={handleTotalStayChange} />
+                        <NumberSlider 
+                            label="No. of Stay" 
+                            onChange={handleTotalStayChange} 
+                            min={DEFAULT_MIN_STAY} 
+                            max={DEFAULT_MAX_STAY} />
                     </Row>
                     <AmountInput label="Total Payout" onChange={handleTotalAmountChange} />
                     <Row className="mb-3">

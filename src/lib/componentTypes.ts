@@ -24,3 +24,9 @@ export interface InputForm<T> extends InputFormLabel {
     onBlur?: (value: T) => void
     value?: string
 }
+
+export interface RangeInputForm<T> extends InputForm<T> {
+    onChange?: (value: T) => void
+    min?: number
+    max?: number
+}
