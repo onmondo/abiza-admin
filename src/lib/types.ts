@@ -48,3 +48,7 @@ export type BillingSpecs = {
     noOfPax: number
     noOfStay: number
 }
+
+export interface DeleteBookingParam extends FetchBookingReportParam {
+    bookingId: string
+}

@@ -29,5 +29,19 @@ export const postData = async <T>(options: PostParam<T>) => {
     });
     const { data } = response;
     return data  
+}
 
+export const deleteData = async (options: FetchParam) => {
+
+    const response = await axios.delete(
+        options.url, 
+        {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${options?.accessToken}`
+            }
+    });
+    const { data } = response;
+    return data  
 }

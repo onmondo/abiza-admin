@@ -7,8 +7,8 @@ import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import Button from "react-bootstrap/Button"
 import { useBookingReportContext } from "../../contexts/BookingReportProvider"
-import { FetchBookingReportParam, FetchParam, Booking } from "../../lib/types"
-import { fetchAPI } from "../../util/fetchApi"
+import { FetchBookingReportParam, FetchParam, Booking, DeleteBookingParam } from "../../lib/types"
+import { deleteData, fetchAPI } from "../../util/api"
 import { YearSelection } from "../YearSelection"
 import { MonthSelection } from "../MonthSelection"
 import { TableHeader } from "./tableHeader"
@@ -59,6 +59,29 @@ export function BookingTable() {
         updateBookingForm(!state.isBookingFormOpen)
     }
 
+    async function deleteBooking(deleteBookingParam: DeleteBookingParam) {
+        try {
+            const year = deleteBookingParam.chosenYear || moment().year().toString();
+            const month = deleteBookingParam.chosenMonth || moment().format("MMMM");
+            const deleteParam: FetchParam = {
+                url: `${process.env.ROOT_API}/bookings/${year}/${month}/${deleteBookingParam.bookingId}`
+            }
+
+            await deleteData(deleteParam)
+
+        } catch (error) {
+            // raise up to redux
+        }
+    }
+
+    function handleDeleteBooking(deleteBookingParam: DeleteBookingParam) {
+        deleteBooking(deleteBookingParam);
+        fetchBookings({ 
+            chosenYear: state.chosenYear, 
+            chosenMonth: state.chosenMonth
+        })
+    }
+
     return (
         <>
         <section>
@@ -78,12 +101,13 @@ export function BookingTable() {
                 </Row>
             </div>                
             </Stack>
-            <Table striped>
+            <Table striped hover>
                 <TableHeader />
                 <tbody>
                     {currentMonthlyBookings.map(
-                        booking => (
+                        (booking, index) => (
                             <tr key={booking._id}>
+                                <td>{index += 1}</td>
                                 <td>{
                                     (booking.rooms && booking.rooms?.length > 0) 
                                         ? booking.rooms.map(room => room)
@@ -101,6 +125,19 @@ export function BookingTable() {
                                 <td>{booking.modeOfPayment}</td>
                                 <td>{moment(booking.datePaid).format("DD-MMMM-YYYY")}</td>
                                 <td>{booking.remarks}</td>
+                                <td>
+                                    <Button 
+                                        variant="danger"
+                                        onClick={() => {
+                                            handleDeleteBooking({
+                                                bookingId: (booking._id || ""),
+                                                chosenMonth: moment(booking.checkIn).format("MMMM"),
+                                                chosenYear: moment(booking.checkIn).format("YYYY")
+                                            })
+                                        }}>
+                                        Delete
+                                    </Button>
+                                </td>
                             </tr> 
                         )
                     )}
