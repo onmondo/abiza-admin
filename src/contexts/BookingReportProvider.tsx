@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import moment from "moment";
 import { BookingReportContextProps } from "../lib/componentTypes";
 
 interface BookingReportState {
@@ -17,8 +18,8 @@ interface BookingReportContextValue {
 
 const BookingReportContext = createContext<BookingReportContextValue>({
     state: { 
-        chosenYear: "", 
-        chosenMonth: "",
+        chosenYear: moment().year().toString(), 
+        chosenMonth: moment().format("MMMM"),
         isBookingFormOpen: false,
     },
     setState: () => {},
@@ -34,8 +35,8 @@ export function useBookingReportContext() {
 // Provides App level component context
 export const BookingReportProvider: React.FC<BookingReportContextProps> = ({ children }) => {
     const [state, setState] = useState<BookingReportState>({ 
-        chosenYear: "", 
-        chosenMonth: "",
+        chosenYear: moment().year().toString(), 
+        chosenMonth: moment().format("MMMM"),
         isBookingFormOpen: false,
     });
   
