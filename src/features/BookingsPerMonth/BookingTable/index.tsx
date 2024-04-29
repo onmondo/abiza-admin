@@ -4,13 +4,10 @@ import Table from "react-bootstrap/Table"
 import Button from "react-bootstrap/Button"
 import Pagination from "react-bootstrap/Pagination"
 import { useBookingReportContext } from "../../../contexts/BookingReportProvider"
-import { 
-    FetchParam, 
-    Booking, 
-    DeleteBookingParam 
-} from "../../../lib/types"
-import { deleteData, fetchAPI } from "../../../util/api"
-import { TableHeader } from "./tableHeader"
+import { FetchParam, Booking } from "../../../lib/types"
+import { fetchAPI } from "../../../util/api"
+import { TableHeader } from "./TableHeader"
+import { useDeleteBookingContext } from "../../../contexts/DeleteBookingProvider"
 
 export function BookingTable() {
     const DEFAULT_LIMIT = 10;
@@ -19,7 +16,10 @@ export function BookingTable() {
 
     const { 
         state,
+        toggleDeleteModal,
     } = useBookingReportContext()
+
+    const { updateBookingId } = useDeleteBookingContext();
 
     async function fetchBookings() {
         try {
@@ -37,27 +37,12 @@ export function BookingTable() {
 
     useEffect(() => {
         fetchBookings()
-    }, [state.chosenMonth, state.chosenYear, state.isBookingFormOpen, currentPage])
+    }, [state.chosenMonth, state.chosenYear, state.isBookingFormOpen, currentPage, state.isDeleteModalOpen])
 
+    function handleDeleteBooking(bookingId: string | undefined) {
+        toggleDeleteModal(!state.isDeleteModalOpen);
+        updateBookingId(bookingId || "")
 
-    async function deleteBooking(deleteBookingParam: DeleteBookingParam) {
-        try {
-            const year = deleteBookingParam.chosenYear || moment().year().toString();
-            const month = deleteBookingParam.chosenMonth || moment().format("MMMM");
-            const deleteParam: FetchParam = {
-                url: `${process.env.ROOT_API}/bookings/${year}/${month}/${deleteBookingParam.bookingId}`
-            }
-
-            await deleteData(deleteParam)
-
-        } catch (error) {
-            // raise up to redux
-        }
-    }
-
-    function handleDeleteBooking(deleteBookingParam: DeleteBookingParam) {
-        deleteBooking(deleteBookingParam);
-        fetchBookings();
     }
 
     function handleNextPage() {
@@ -108,11 +93,7 @@ export function BookingTable() {
                                     <Button 
                                         variant="danger"
                                         onClick={() => {
-                                            handleDeleteBooking({
-                                                bookingId: (booking._id || ""),
-                                                chosenMonth: moment(booking.checkIn).format("MMMM"),
-                                                chosenYear: moment(booking.checkIn).format("YYYY")
-                                            })
+                                            handleDeleteBooking(booking._id)
                                         }}>
                                         Delete
                                     </Button>
