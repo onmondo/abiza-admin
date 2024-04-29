@@ -1,5 +1,5 @@
 import React from "react"
-import { populateColumnNames } from "../../util/seeds"
+import { populateColumnNames } from "../../../util/seeds"
 
 export function TableHeader() {
     return (

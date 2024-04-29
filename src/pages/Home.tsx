@@ -1,6 +1,7 @@
 import React from "react"
-import { BookingTable } from "../components/BookingTable"
+// import { BookingTable } from "../features/BookingsPerMonth/BookingTable"
 import { BookingReportProvider } from "../contexts/BookingReportProvider"
+import { BookingsPerMonth } from "../features/BookingsPerMonth"
 
 export function Home() {
     return (
@@ -9,7 +10,7 @@ export function Home() {
                 <header>
                     <h1>Bookings</h1>
                 </header>
-                <BookingTable />
+                <BookingsPerMonth />
             </article>
         </BookingReportProvider>
     )
