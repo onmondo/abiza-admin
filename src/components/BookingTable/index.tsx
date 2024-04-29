@@ -24,14 +24,14 @@ export function BookingTable() {
     const DEFAULT_LIMIT = 10;
     const [currentMonthlyBookings, setCurrentMonthlyBookings] = useState<Booking[]>([])
     const [currentPage, setCurrentPage] = useState(1)
-    // const [totalPage, totalPage] = useState(1)
-    // const [page, setPage] = useState(1)
+    // const [selectedBooking, setSelectedBooking] = useState("");
 
     const { 
         state,
         updateChosenMonth,
         updateChosenYear,
         updateBookingForm,
+        updateChosenBookingId,
     } = useBookingReportContext()
 
     async function fetchBookings() {
@@ -97,7 +97,7 @@ export function BookingTable() {
     }
 
     return (
-        <>
+
         <section>
         <Stack gap={2} className="mx-auto">
             <Stack direction="horizontal" gap={3}>
@@ -120,7 +120,16 @@ export function BookingTable() {
                 <tbody>
                     {currentMonthlyBookings.map(
                         (booking, index) => (
-                            <tr key={booking._id}>
+                            <tr 
+                                key={booking._id} 
+                                onMouseEnter={() => { 
+                                    if (booking._id)
+                                        updateChosenBookingId(booking._id) 
+                                    }}
+                                onMouseLeave={() => { 
+                                        updateChosenBookingId("") 
+                                    }}
+                                >
                                 <td>{index += 1}</td>
                                 <td>{
                                     (booking.rooms && booking.rooms?.length > 0) 
@@ -149,11 +158,13 @@ export function BookingTable() {
                                         <Button 
                                             variant="danger"
                                             onClick={() => {
-                                                handleDeleteBooking({
-                                                    bookingId: (booking._id || ""),
-                                                    chosenMonth: moment(booking.checkIn).format("MMMM"),
-                                                    chosenYear: moment(booking.checkIn).format("YYYY")
-                                                })
+                                                if (booking._id) {
+                                                    handleDeleteBooking({
+                                                        bookingId: booking._id,
+                                                        chosenMonth: moment(booking.checkIn).format("MMMM"),
+                                                        chosenYear: moment(booking.checkIn).format("YYYY")
+                                                    })
+                                                }
                                             }}>
                                             Delete
                                         </Button>
@@ -182,12 +193,11 @@ export function BookingTable() {
                     {/* <Pagination.Last /> */}
                 </Pagination>
             <Stack direction="horizontal" gap={3}>
-                <Button variant="primary" onClick={handleToggleForm}>Adde new booking</Button>{' '}
+                <Button variant="primary" onClick={handleToggleForm}>Add new booking</Button>{' '}
             </Stack>
         </Stack>
         </section>
-        <BookingForm show={state.isBookingFormOpen} handleClose={handleToggleForm} />
-        </>
+
 
     )
 }

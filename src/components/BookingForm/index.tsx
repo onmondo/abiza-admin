@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -9,11 +9,20 @@ import Col from "react-bootstrap/Col";
 import { BookingFormProps } from "../../lib/componentTypes";
 import { NumberSlider } from "./NumberSlider";
 import { AmountInput } from "./AmountInput";
-import { postData } from "../../util/api";
-import { Booking, DateRequest } from "../../lib/types";
+import { fetchAPI, postData } from "../../util/api";
+import { Booking, DateRequest, FetchParam } from "../../lib/types";
 import { CompleteDateInput } from "./CompleteDateInput";
+import { useBookingReportContext } from "../../contexts/BookingReportProvider";
 
 export function BookingForm({ show, handleClose }: BookingFormProps) {
+    const { 
+        state,
+        // updateChosenMonth,
+        // updateChosenYear,
+        // updateBookingForm,
+        // updateChosenBookingId,
+    } = useBookingReportContext()
+    
     // these values can also be pulled from an API resource
     const DEFAULT_MIN_PAX = 1
     const DEFAULT_MAX_PAX = 4
@@ -21,16 +30,17 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
     const DEFAULT_MAX_STAY = 14
     const DEFAULT_PAX = 2
     const EXTRA_COST = 500
-
-    const [booking, setBooking] = useState<Booking>({ 
+    const DEFAULT_BOOKING = { 
         noOfStay: DEFAULT_MIN_STAY, 
         noOfPax: DEFAULT_MIN_PAX,
         checkIn: moment().format("YYYY-MM-DD"),
         nightlyPrice: 0,
         totalPayout: 0
-    })
+    }
 
-    const [tempTotalPayout, setTempTotalPayout] = useState(0);
+    const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING)
+
+    // const [tempTotalPayout, setTempTotalPayout] = useState(0);
 
     function handleGuestNameChange(event: any) {
         setBooking({...booking, guestName: event.target.value})
@@ -85,14 +95,14 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
             totalPayout
         })
 
-        setTempTotalPayout(totalPayout)
+        // setTempTotalPayout(totalPayout)
     }
 
     function handleTotalStayChange(value: number) {
         setBooking({
             ...booking, 
             noOfStay: value,
-            totalPayout: tempTotalPayout * (value) 
+            totalPayout: booking.totalPayout * (value) 
         })
     }
     
@@ -120,7 +130,33 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
         }
     }
 
-    // console.log(booking);
+    // async function updateBooking() {
+        
+    // }
+
+    async function fetchBooking(bookingId: string) {
+        try {
+            const fetchParam: FetchParam = {
+                url: `${process.env.ROOT_API}/bookings/${bookingId}`
+            }
+            const { booking } = await fetchAPI(fetchParam)
+            console.log(booking)
+            setBooking(booking)
+        } catch (error) {
+            // raise up to redux
+        }
+    }
+
+    useEffect(() => {
+        if (state.chosenBookingId) {
+            fetchBooking(state.chosenBookingId)
+        } else {
+            setBooking(DEFAULT_BOOKING)
+        }
+    }, [state.chosenBookingId])
+
+    // console.log(state.chosenBookingId)
+    // console.log(booking)
     return (
         <Modal id="bookingform" show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -136,6 +172,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                         <Form.Control 
                             type="textarea" 
                             placeholder="Name of the guest" 
+                            value={booking.guestName}
                             onChange={handleGuestNameChange}
                         />
                     </FloatingLabel>
@@ -149,6 +186,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                                 <Form.Control 
                                     type="textarea"
                                     placeholder="Booking from" 
+                                    value={booking.from}
                                     onChange={handleBookingFromChange}
                                 />
                             </FloatingLabel>
@@ -162,6 +200,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                                 <Form.Control 
                                     type="textarea" 
                                     placeholder="Rooms taken by guest" 
+                                    value={booking.rooms?.join(", ")}
                                     onChange={handleRoomsTakenChange}
                                 />
                             </FloatingLabel>
@@ -182,10 +221,11 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                             <Form.Control 
                                 type="textarea" 
                                 placeholder="Mode of payment" 
+                                value={booking.modeOfPayment}
                                 onChange={handlePaymentOptionChange}
                             />
                         </Col>
-                        <Col><AmountInput label="Nightly Price" onChange={handlePriceChange} /></Col>
+                        <Col><AmountInput label="Nightly Price" value={booking.nightlyPrice.toString()} onChange={handlePriceChange} /></Col>
                         <Form.Text id="passwordHelpBlock" muted>
                         Mode of payment can be Cash or any Bank Transfers available (e.g. BPI, BDO etc...)
                         </Form.Text>
@@ -193,7 +233,8 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                     <Row className="mb-3">
                         <NumberSlider 
                             label="No. of Pax" 
-                            onChange={handleTotalPaxChange} 
+                            onChange={handleTotalPaxChange}
+                            value={booking.noOfPax.toString()}
                             min={DEFAULT_MIN_PAX} 
                             max={DEFAULT_MAX_PAX} />
                     </Row>
@@ -201,6 +242,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                         <NumberSlider 
                             label="No. of Stay" 
                             onChange={handleTotalStayChange} 
+                            value={booking.noOfStay.toString()}
                             min={DEFAULT_MIN_STAY} 
                             max={DEFAULT_MAX_STAY} />
                     </Row>
@@ -213,7 +255,7 @@ export function BookingForm({ show, handleClose }: BookingFormProps) {
                         label="Remarks"
                         className="mb-3"
                     >
-                        <Form.Control as="textarea" aria-label="With textarea" onChange={handleRemarksChange} />
+                        <Form.Control as="textarea" aria-label="With textarea" value={booking.remarks} onChange={handleRemarksChange} />
                     </FloatingLabel>
                 </Form>
             </Modal.Body>

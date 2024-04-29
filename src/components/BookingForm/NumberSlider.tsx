@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import { RangeInputForm } from "../../lib/componentTypes";
 
-export function NumberSlider({ label, onChange, min, max }: RangeInputForm<number>) {
+export function NumberSlider({ label, value, onChange, min, max }: RangeInputForm<number>) {
     const [currentRange, setCurrentRange] = useState(1)
 
     function handleOnChange(event: any) {
@@ -11,7 +11,13 @@ export function NumberSlider({ label, onChange, min, max }: RangeInputForm<numbe
     }
 
     useEffect(() => {
-        if(onChange && currentRange) {
+        if (value) {
+            setCurrentRange(parseInt(value))
+        }
+    }, [])
+
+    useEffect(() => {
+        if (onChange && currentRange) {
             onChange(currentRange)
         }
     }, [currentRange])
@@ -20,7 +26,7 @@ export function NumberSlider({ label, onChange, min, max }: RangeInputForm<numbe
         <>
             <Form.Label>{label}</Form.Label>
             <Col><Form.Control type="number" value={currentRange} readOnly /></Col>
-            <Col><Form.Range defaultValue={currentRange} onChange={handleOnChange} min={min} max={max} /></Col>
+            <Col><Form.Range defaultValue={currentRange} value={currentRange} onChange={handleOnChange} min={min} max={max} /></Col>
         </>
     )
 }

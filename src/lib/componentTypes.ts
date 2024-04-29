@@ -11,6 +11,7 @@ export interface SelectionProps {
 }
 
 export interface BookingFormProps {
+    bookingId?: string
     handleClose?: () => void
     show?: boolean
 }

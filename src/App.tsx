@@ -2,11 +2,14 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import "./App.scss"
+import { BookingReportProvider } from "./contexts/BookingReportProvider";
 
 export function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Home />}/>
-        </Routes>
+        <BookingReportProvider>
+            <Routes>
+                <Route path="/" element={<Home />}/>
+            </Routes>
+        </BookingReportProvider>
     )
 }

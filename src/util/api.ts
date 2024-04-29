@@ -45,3 +45,19 @@ export const deleteData = async (options: FetchParam) => {
     const { data } = response;
     return data  
 }
+
+export const patchData = async <T>(options: PostParam<T>) => {
+
+    const response = await axios.patch(
+        options.url, 
+        options.requestBody,
+        {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${options?.accessToken}`
+            }
+    });
+    const { data } = response;
+    return data  
+}

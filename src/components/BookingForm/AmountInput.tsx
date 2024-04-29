@@ -11,11 +11,18 @@ export function AmountInput({ label, value, onChange }: InputForm<number>) {
     }
 
     useEffect(() => {
-        if(onChange) {
+        if (value) {
+            setAmount(parseFloat(value))
+        }
+    }, [])
+
+    useEffect(() => {
+        if (onChange) {
             onChange(amount)
         }
     }, [amount])
 
+    console.log(label, value, amount)
     return (
         <>
             <Form.Label>{label}</Form.Label>
@@ -25,7 +32,7 @@ export function AmountInput({ label, value, onChange }: InputForm<number>) {
                     className="amount"
                     type="number" 
                     aria-label="Amount (to the nearest peso)" 
-                    value={value}
+                    value={amount}
                     onChange={handleAmountChange} 
                 />
                 <InputGroup.Text>.00</InputGroup.Text>
