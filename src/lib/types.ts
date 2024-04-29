@@ -48,9 +48,3 @@ export type BillingSpecs = {
     noOfPax: number
     noOfStay: number
 }
-
-export interface DeleteBookingParam {
-    chosenMonth: string
-    chosenYear: string
-    bookingId: string
-}

@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState } from "react";
 import moment from "moment";
-import { BookingReportContextProps } from "../lib/componentTypes";
+import { ContextProps } from "../lib/componentTypes";
 
 interface BookingReportState {
     chosenYear: string
     chosenMonth: string
     isBookingFormOpen: boolean
+    isDeleteModalOpen: boolean
 }
 
 interface BookingReportContextValue {
@@ -14,6 +15,7 @@ interface BookingReportContextValue {
     updateChosenYear: (chosenYear: string) => void;
     updateChosenMonth: (chosenMonth: string) => void;
     updateBookingForm: (isBookingFormOpen: boolean) => void;
+    toggleDeleteModal: (isDeleteModalOpen: boolean) => void;
 }
 
 const BookingReportContext = createContext<BookingReportContextValue>({
@@ -21,11 +23,13 @@ const BookingReportContext = createContext<BookingReportContextValue>({
         chosenYear: moment().year().toString(), 
         chosenMonth: moment().format("MMMM"),
         isBookingFormOpen: false,
+        isDeleteModalOpen: false,
     },
     setState: () => {},
     updateChosenYear: () => {},
     updateChosenMonth: () => {},
     updateBookingForm: () => {},
+    toggleDeleteModal: () => {},
 });
 
 export function useBookingReportContext() {
@@ -33,11 +37,12 @@ export function useBookingReportContext() {
 }
 
 // Provides App level component context
-export const BookingReportProvider: React.FC<BookingReportContextProps> = ({ children }) => {
+export const BookingReportProvider: React.FC<ContextProps> = ({ children }) => {
     const [state, setState] = useState<BookingReportState>({ 
         chosenYear: moment().year().toString(), 
         chosenMonth: moment().format("MMMM"),
         isBookingFormOpen: false,
+        isDeleteModalOpen: false,
     });
   
     const updateChosenYear = (chosenYear: string) => {
@@ -51,6 +56,10 @@ export const BookingReportProvider: React.FC<BookingReportContextProps> = ({ chi
     const updateBookingForm = (isBookingFormOpen: boolean) => {
         setState({ ...state, isBookingFormOpen });
     }
+
+    const toggleDeleteModal = (isDeleteModalOpen: boolean) => {
+        setState({ ...state, isDeleteModalOpen })
+    }
   
     // Value object that includes both state and update function
     const value: BookingReportContextValue = {
@@ -59,6 +68,7 @@ export const BookingReportProvider: React.FC<BookingReportContextProps> = ({ chi
         updateChosenYear,
         updateChosenMonth,
         updateBookingForm,
+        toggleDeleteModal,
     };
   
     return <BookingReportContext.Provider value={value}>{children}</BookingReportContext.Provider>;

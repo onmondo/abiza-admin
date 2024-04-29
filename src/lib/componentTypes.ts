@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-export type BookingReportContextProps = {
+export type ContextProps = {
     children: ReactNode
 };
 
